@@ -1,0 +1,20 @@
+{
+  "name": "calculate_calories_ai",
+  "version": "1.0.0",
+  "description": "calculate calories ai",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zafarbek Qalandarov webzafar6699@gmail.com +99890 116 66 99",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.0",
+    "multer": "^1.4.5-lts.1",
+    "openai": "^4.47.1",
+    "path": "^0.12.7"
+  }
+}
