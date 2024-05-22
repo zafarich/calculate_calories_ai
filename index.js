@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Database Connection
 mongoose.connect("mongodb://localhost:27017/calculate_calories", {});

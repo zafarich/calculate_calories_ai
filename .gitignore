@@ -1,5 +1,5 @@
 node_modules
-uploads
+public
 package-*
 .vscode
 .env
