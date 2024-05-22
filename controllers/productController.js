@@ -3,10 +3,12 @@ const path = require("path");
 const sharp = require("sharp");
 const sizeOf = require("image-size");
 const fs = require("fs");
+import {HttpsProxyAgent} from "https-proxy-agent";
 
 const {OpenAI} = require("openai");
 
 const openai = new OpenAI({
+  httpAgent: new HttpsProxyAgent("http://199.102.107.145:4145"),
   organization: process.env.ORG_ID,
   apiKey: process.env.API_KEY,
 });
