@@ -182,7 +182,7 @@ async function calculateCaloriesWithAI(product) {
       {
         role: "user",
         content: [
-          ...product_item,
+          {...product_item},
           {
             type: "text",
             text: `It is necessary to check whether the product is for eating or drinking (is_food), it is healthy food (is_healthy) and its calories. The response must be JSON only. JSON {is_food: true || false, is_healthy: true || false, title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in uzbek`,
