@@ -3,7 +3,7 @@ const path = require("path");
 const sharp = require("sharp");
 const sizeOf = require("image-size");
 const fs = require("fs");
-import {HttpsProxyAgent} from "https-proxy-agent";
+const {HttpsProxyAgent} = require("https-proxy-agent");
 
 const {OpenAI} = require("openai");
 
