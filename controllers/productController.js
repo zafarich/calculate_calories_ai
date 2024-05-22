@@ -42,7 +42,7 @@ exports.createProduct = async (req, res) => {
   if (req.file) {
     const originalPath = req.file.path;
     const resizedImagePath = path.join(
-      "/uploads/product/",
+      path.dirname("/uploads/product/"),
       "resized-" + req.file.filename
     );
     await sharp(originalPath).resize(512, 1024).toFile(resizedImagePath);
