@@ -1,15 +1,17 @@
 const express = require("express");
 const multer = require("multer");
+const md5 = require("md5");
+const path = require("path");
 const router = express.Router();
 const productController = require("../controllers/productController");
 
 // Multer setup for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../uploads/");
+    cb(null, "./uploads/product");
   },
   filename: function (req, file, cb) {
-    cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
+    cb(null, `${md5(Date.now())}${path.extname(file.originalname)}`);
   },
 });
 

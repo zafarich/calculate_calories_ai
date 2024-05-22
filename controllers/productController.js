@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 const path = require("path");
+const sharp = require("sharp");
 
 exports.getAllProducts = async (req, res) => {
   try {
@@ -37,7 +38,16 @@ exports.addComment = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   console.log("req", req.body);
-  const imagePath = req.file ? req.file.path : null;
+  let imagePath = null;
+  if (req.file) {
+    const originalPath = req.file.path;
+    const resizedImagePath = path.join(
+      path.dirname(originalPath),
+      "resized-" + req.file.filename
+    );
+    await sharp(originalPath).resize(512, 1024).toFile(resizedImagePath);
+    imagePath = resizedImagePath;
+  }
   const product = new Product({
     image: imagePath,
     title: req.body.title,

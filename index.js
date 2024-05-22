@@ -2,12 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const path = require("path");
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 
 // Database Connection
 mongoose.connect("mongodb://localhost:27017/calculate_calories", {});
