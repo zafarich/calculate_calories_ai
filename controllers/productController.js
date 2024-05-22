@@ -54,7 +54,7 @@ exports.createProduct = async (req, res) => {
       return {width: 1024, height: 512};
     }
   }
-  console.log("req", req.body);
+
   let imagePath = null;
   if (req.file) {
     const originalPath = `public/uploads/product/${req.file.filename}`;
@@ -90,7 +90,12 @@ exports.createProduct = async (req, res) => {
   try {
     const newProduct = await product.save();
 
-    res.status(201).json(newProduct);
+    const ai_response = await calculateCaloriesWithAI(newProduct);
+
+    res.status(201).json({
+      success: true,
+      data: {product_id: newProduct?._id, result: ai_response},
+    });
   } catch (error) {
     res.status(400).json({message: error.message});
   }
@@ -146,28 +151,31 @@ async function calculateCaloriesWithAI(product) {
   //   client_id: [],
   // };
 
+  const lang = product?.lang === "uz" ? "Uzbek" : "Russian";
+
   const product_item =
     product?.type === "image"
       ? {
           type: "image_url",
           image_url: {
-            url: "https://zamin.uz/uploads/posts/2020-12/1606813503_1555593733_osh-uzbk-palov-uzbek-osh-palov-6.jpg",
+            url: product?.image,
           },
         }
-      : {};
+      : {
+          type: "text",
+          text: `${product?.title} in ${lang}`,
+        };
 
   const res = await openai.chat.completions.create({
     model: "gpt-4o",
+    response_format: {
+      type: "json_object",
+    },
     messages: [
       {
         role: "user",
         content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: "https://zamin.uz/uploads/posts/2020-12/1606813503_1555593733_osh-uzbk-palov-uzbek-osh-palov-6.jpg",
-            },
-          },
+          ...product_item,
           {
             type: "text",
             text: `It is necessary to check whether the product is for eating or drinking (is_food), it is healthy food (is_healthy) and its calories. The response must be JSON only. JSON {is_food: true || false, is_healthy: true || false, title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in uzbek`,
@@ -177,5 +185,5 @@ async function calculateCaloriesWithAI(product) {
     ],
   });
 
-  console.log("string", res?.choices[0]?.message?.content);
+  return JSON.parse(res?.choices[0]?.message?.content);
 }
