@@ -4,6 +4,13 @@ const sharp = require("sharp");
 const sizeOf = require("image-size");
 const fs = require("fs");
 
+const {OpenAI} = require("openai");
+
+const openai = new OpenAI({
+  organization: process.env.ORG_ID,
+  apiKey: process.env.API_KEY,
+});
+
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
