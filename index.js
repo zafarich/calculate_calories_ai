@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
-
+const fs = require("fs");
+require("dotenv").config();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());

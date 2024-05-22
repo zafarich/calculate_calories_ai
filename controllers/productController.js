@@ -1,6 +1,8 @@
 const Product = require("../models/Product");
 const path = require("path");
 const sharp = require("sharp");
+const sizeOf = require("image-size");
+const fs = require("fs");
 
 exports.getAllProducts = async (req, res) => {
   try {
@@ -37,19 +39,48 @@ exports.addComment = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
+  function selectImageScale(width, height) {
+    const aspectRatio = width / height;
+
+    const scale1x1 = Math.abs(aspectRatio - 1);
+    const scale1x2 = Math.abs(aspectRatio - 0.5);
+    const scale2x1 = Math.abs(aspectRatio - 2);
+
+    if (scale1x1 <= scale1x2 && scale1x1 <= scale2x1) {
+      return {width: 512, height: 512};
+    } else if (scale1x2 <= scale1x1 && scale1x2 <= scale2x1) {
+      return {width: 512, height: 1024};
+    } else {
+      return {width: 1024, height: 512};
+    }
+  }
   console.log("req", req.body);
   let imagePath = null;
   if (req.file) {
-    const originalPath = req.file.path;
-    const resizedImagePath = path.join(
-      path.dirname("/uploads/product/"),
-      "resized-" + req.file.filename
-    );
-    await sharp(originalPath).resize(512, 1024).toFile(resizedImagePath);
-    imagePath = resizedImagePath;
+    const originalPath = `public/uploads/product/${req.file.filename}`;
+    const resizedPath = `public/uploads/product/resized-${req.file.filename}`;
+
+    const dimensions = sizeOf(originalPath);
+
+    width = dimensions.width;
+    height = dimensions.height;
+
+    const {widht_resize, height_resize} = selectImageScale(width, height);
+
+    await sharp(originalPath)
+      .resize(widht_resize, height_resize)
+      .toFile(resizedPath);
+    fs.unlink(originalPath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+      } else {
+        console.log("Original file deleted successfully");
+      }
+    });
+    imagePath = `/uploads/product/resized-${req.file.filename}`;
   }
   const product = new Product({
-    image: imagePath,
+    image: process.env.BASE_URL + imagePath,
     title: req.body.title,
     type: req.body.type,
     lang: req.body.lang,
