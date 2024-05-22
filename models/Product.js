@@ -19,7 +19,19 @@ const ProductSchema = new mongoose.Schema({
     required: true,
     enum: ["text", "image"],
   },
-  comments: [CommentSchema],
+  lang: {
+    type: String,
+    required: true,
+    enum: ["uz", "ru"],
+  },
+  client_id: {
+    type: String || Number,
+    require: true,
+  },
+  comments: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
