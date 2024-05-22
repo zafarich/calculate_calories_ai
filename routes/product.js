@@ -8,7 +8,7 @@ const productController = require("../controllers/productController");
 // Multer setup for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/uploads/product");
+    cb(null, "./uploads/product");
   },
   filename: function (req, file, cb) {
     cb(null, `${md5(Date.now())}${path.extname(file.originalname)}`);
