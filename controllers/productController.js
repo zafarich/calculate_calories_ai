@@ -13,14 +13,42 @@ const openai = new OpenAI({
 
 exports.addComment = async (req, res) => {
   try {
+    const comment = req.body?.comment;
+    if (!comment) {
+      return res.status(201).json({
+        success: false,
+        data: null,
+        error_code: 1,
+        message: "comment is required",
+      });
+    }
+
+    if (comment && comment?.length > 50) {
+      return res.status(201).json({
+        success: false,
+        data: null,
+        error_code: 2,
+        message: "Izoh 50 ta belgidan ko'p bo'lmasligi kerak",
+      });
+    }
+
     const product = await Product.findById(req.body?.product_id);
     if (!product) {
       return res.status(404).json({message: "Product not found"});
     }
 
+    if (product.comments?.length > 6) {
+      return res.status(201).json({
+        success: false,
+        data: null,
+        error_code: 3,
+        message: "Bitta mahsulot uchun maksimal izoh 6 ta",
+      });
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       req.body?.product_id,
-      {$addToSet: {comments: req.body?.comment}}, // Update
+      {$addToSet: {comments: comment}}, // Update
       {
         new: true,
         runValidators: true,
