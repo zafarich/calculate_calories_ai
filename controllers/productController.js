@@ -64,10 +64,9 @@ exports.createProduct = async (req, res) => {
     width = dimensions.width;
     height = dimensions.height;
 
-    const {widht_resize, height_resize} = selectImageScale(width, height);
-
+    const sizes = selectImageScale(width, height);
     await sharp(originalPath)
-      .resize(widht_resize, height_resize)
+      .resize(sizes?.width, sizes?.height)
       .toFile(resizedPath);
     fs.unlink(originalPath, (err) => {
       if (err) {
