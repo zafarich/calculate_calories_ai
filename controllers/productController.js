@@ -137,7 +137,7 @@ async function calculateCaloriesWithAI(product) {
           {...product_item},
           {
             type: "text",
-            text: `Is it food, meal or drink? response only JSON = {is_food_meal_drink: true || false}`,
+            text: `Bu ovqat, yeydigan mahsulot yoki ichimlikmi? Javob faqat JSON ko'rinishda bo'lsin = {for_eat_or_drink: true || false}`,
           },
         ],
       },
