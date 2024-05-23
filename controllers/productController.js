@@ -52,36 +52,12 @@ exports.createProduct = async (req, res) => {
       return {width: 1024, height: 512};
     }
   }
-  const body = {...req.body};
-
-  if (req.body.type === "image" || req.body.type === "text") {
-    return res.status(201).json({
-      success: false,
-      data: null,
-      message: "Type need to only image or text",
-    });
-  }
-
-  if (req.body.type === "image" && !req.file) {
-    return res.status(201).json({
-      success: false,
-      data: null,
-      message: "If type is image, image is required",
-    });
-  }
-
-  if (req.body.type === "text" && !req.title) {
-    return res.status(201).json({
-      success: false,
-      data: null,
-      message: "If type is image, image is required",
-    });
-  }
-
   let imagePath = null;
+  let originalPath = "";
+  let resizedPath = "";
   if (req.file) {
-    const originalPath = `public/uploads/product/${req.file.filename}`;
-    const resizedPath = `public/uploads/product/resized-${req.file.filename}`;
+    originalPath = `public/uploads/product/${req.file.filename}`;
+    resizedPath = `public/uploads/product/resized-${req.file.filename}`;
 
     const dimensions = sizeOf(originalPath);
 
@@ -102,6 +78,16 @@ exports.createProduct = async (req, res) => {
     });
     imagePath = `/uploads/product/resized-${req.file.filename}`;
   }
+
+  const validation = await createValidation(req, originalPath, resizedPath);
+
+  if (!validation?.success) {
+    return res.status(201).json({
+      ...validation,
+      data: null,
+    });
+  }
+
   const product = new Product({
     image: process.env.BASE_URL + imagePath,
     title: req.body.title,
@@ -160,4 +146,57 @@ async function calculateCaloriesWithAI(product) {
   });
 
   return JSON.parse(res?.choices[0]?.message?.content);
+}
+
+async function createValidation(req, originalPath, resizedPath) {
+  let has_error = false;
+
+  console.log("originalPath", originalPath);
+  if (req.body.type === "image" || req.body.type === "text") {
+    has_error = true;
+    deleteImage(originalPath);
+    deleteImage(resizedPath);
+    return {
+      success: false,
+      message: "Type need to only image or text",
+    };
+  }
+
+  if (req.body.type === "image" && !req.file) {
+    has_error = true;
+    deleteImage(originalPath);
+    deleteImage(resizedPath);
+
+    return {
+      success: false,
+      message: "If type is image, image is required",
+    };
+  }
+
+  if (req.body.type === "text" && !req.title) {
+    has_error = true;
+    deleteImage(originalPath);
+    deleteImage(resizedPath);
+    return {
+      success: false,
+      message: "If type is text, title is required",
+    };
+  }
+
+  return {
+    success: true,
+    message: "",
+  };
+}
+
+async function deleteImage(path) {
+  if (path) {
+    fs.unlink(path, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+      } else {
+        console.log("Original file deleted successfully");
+      }
+    });
+  }
 }
