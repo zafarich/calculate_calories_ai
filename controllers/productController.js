@@ -79,7 +79,7 @@ exports.createProduct = async (req, res) => {
     imagePath = `/uploads/product/resized-${req.file.filename}`;
   }
 
-  const validation = await createValidation(req, originalPath, resizedPath);
+  const validation = await createValidation(req, resizedPath);
 
   if (!validation?.success) {
     return res.status(201).json({
@@ -148,13 +148,12 @@ async function calculateCaloriesWithAI(product) {
   return JSON.parse(res?.choices[0]?.message?.content);
 }
 
-async function createValidation(req, originalPath, resizedPath) {
+async function createValidation(req, resizedPath) {
   let has_error = false;
 
   console.log("originalPath", originalPath);
   if (req.body.type === "image" || req.body.type === "text") {
     has_error = true;
-    deleteImage(originalPath);
     deleteImage(resizedPath);
     return {
       success: false,
@@ -164,7 +163,6 @@ async function createValidation(req, originalPath, resizedPath) {
 
   if (req.body.type === "image" && !req.file) {
     has_error = true;
-    deleteImage(originalPath);
     deleteImage(resizedPath);
 
     return {
@@ -175,7 +173,6 @@ async function createValidation(req, originalPath, resizedPath) {
 
   if (req.body.type === "text" && !req.title) {
     has_error = true;
-    deleteImage(originalPath);
     deleteImage(resizedPath);
     return {
       success: false,
