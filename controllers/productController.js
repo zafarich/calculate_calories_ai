@@ -170,7 +170,7 @@ async function createValidation(req, resizedPath) {
     };
   }
 
-  if (req.body.type === "text" && !req.title) {
+  if (req.body.type === "text" && !req.body?.title) {
     has_error = true;
     deleteImage(resizedPath);
     return {
