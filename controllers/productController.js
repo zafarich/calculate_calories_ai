@@ -144,26 +144,32 @@ async function calculateCaloriesWithAI(product) {
     ],
   });
 
-  // const res = await openai.chat.completions.create({
-  //   model: "gpt-4o",
-  //   response_format: {
-  //     type: "json_object",
-  //   },
-  //   messages: [
-  //     {
-  //       role: "user",
-  //       content: [
-  //         {...product_item},
-  //         {
-  //           type: "text",
-  //           text: `It is necessary to check whether the product is for eating or drinking (is_food) and its calories. The response must be JSON only. JSON {is_food: true || false, title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}`,
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // });
+  const res_json = JSON.parse(res?.choices[0]?.message?.content);
 
-  return JSON.parse(res?.choices[0]?.message?.content);
+  if (res_json?.is_food) {
+    const res2 = await openai.chat.completions.create({
+      model: "gpt-4o",
+      response_format: {
+        type: "json_object",
+      },
+      messages: [
+        {
+          role: "user",
+          content: [
+            {...product_item},
+            {
+              type: "text",
+              text: `Calculate calories. The response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}`,
+            },
+          ],
+        },
+      ],
+    });
+
+    return JSON.parse(res2?.choices[0]?.message?.content);
+  } else {
+    res_json;
+  }
 }
 
 async function createValidation(req, resizedPath) {
