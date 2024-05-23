@@ -137,7 +137,7 @@ async function calculateCaloriesWithAI(product) {
           {...product_item},
           {
             type: "text",
-            text: `Is it food or drink? response only JSON = {is_food: true || false}`,
+            text: `Is it food, meal or drink? response only JSON = {is_food_meal_drink: true || false}`,
           },
         ],
       },
@@ -146,7 +146,7 @@ async function calculateCaloriesWithAI(product) {
 
   const res_json = JSON.parse(res?.choices[0]?.message?.content);
 
-  if (res_json?.is_food) {
+  if (res_json?.is_food_meal_drink) {
     const res2 = await openai.chat.completions.create({
       model: "gpt-4o",
       response_format: {
