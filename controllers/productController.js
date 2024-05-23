@@ -155,7 +155,7 @@ async function calculateCaloriesWithAI(product) {
         {
           role: "user",
           content: [
-            {...product_item},
+            {...product_obj},
             {
               type: "text",
               text: `Calculate calories. The response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}`,
