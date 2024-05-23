@@ -114,7 +114,7 @@ async function calculateCaloriesWithAI(product) {
 
   const check_food_text =
     product?.lang === "uz"
-      ? `'${product?.title}' yeydigan narsa yoki ichimlikmi? Javob faqat JSON ko'rinishda bo'lsin = {for_eat_or_drink: true || false}`
+      ? `'${product?.title}' yeyish yoki ichish uchunmi? Javob faqat JSON ko'rinishda bo'lsin = {for_eat_or_drink: true || false}`
       : `'${product?.title}' это что-то, что можно есть или пить? Пусть ответ будет только в формате JSON = {for_eat_or_drink: true || false}`;
 
   const check_is_food_content =
