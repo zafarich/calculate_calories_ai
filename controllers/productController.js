@@ -12,7 +12,6 @@ const openai = new OpenAI({
 });
 
 exports.addComment = async (req, res) => {
-  console.log("req", req.body);
   try {
     const product = await Product.findById(req.body?.product_id);
     if (!product) {
@@ -27,8 +26,6 @@ exports.addComment = async (req, res) => {
         runValidators: true,
       }
     );
-
-    console.log("updatedProduct", updatedProduct);
 
     res.status(201).json({success: true});
   } catch (error) {
@@ -110,49 +107,38 @@ exports.createProduct = async (req, res) => {
 };
 
 async function calculateCaloriesWithAI(product) {
-  const lang = product?.lang === "uz" ? "o'zbek tilida" : "Russian";
+  const lang = product?.lang === "uz" ? "Uzbek" : "Russian";
 
-  const check_food_text =
-    product?.lang === "uz"
-      ? `'${product?.title}' can be an eating product or a drink. Or Uzbek food. If so, the response should be "yes" {food_or_drink: true}, else {food_or_drink: false}. Response must be only JSON`
-      : `'${product?.title}' это что-то, что можно есть или пить? Пусть ответ будет только в формате JSON = {food_or_drink: true || false}`;
-
-  const check_is_food_content =
+  const product_obj =
     product?.type === "image"
-      ? [
-          {
-            type: "image_url",
-            image_url: {
-              url: product?.image,
-            },
+      ? {
+          type: "image_url",
+          image_url: {
+            url: product?.image,
           },
+        }
+      : {
+          type: "text",
+          text: `${product.title} is ${lang} word`,
+        };
 
-          {
-            type: "text",
-            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
-          },
-        ]
-      : [
-          {
-            type: "text",
-            text: check_food_text,
-          },
-        ];
-
-  const res = await openai.chat.completions.create({
+  const res_check = await openai.chat.completions.create({
     model: "gpt-4o",
     response_format: {
       type: "json_object",
     },
     messages: [
       {
-        role: "user",
-        content: check_is_food_content,
+        ...product_obj,
+      },
+      {
+        type: "text",
+        text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
       },
     ],
   });
 
-  const res_json = JSON.parse(res?.choices[0]?.message?.content);
+  const res_json = JSON.parse(res_check?.choices[0]?.message?.content);
   return res_json;
 
   // if (res_json?.food_or_drink) {

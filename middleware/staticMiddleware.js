@@ -1,7 +1,6 @@
 module.exports = function (req, res, next) {
   const secret_token = process.env.SECRET_TOKEN;
   const token = req.headers["token"];
-  console.log("token", token);
   if (token && token == secret_token) {
     next();
   } else {
