@@ -114,7 +114,7 @@ async function calculateCaloriesWithAI(product) {
 
   const check_food_text =
     product?.lang === "uz"
-      ? `${product?.title} can be an eating product or a drink. Or Uzbek food. If so, the response should be "yes" {food_or_drink: true}, else {food_or_drink: false}`
+      ? `${product?.title} can be an eating product or a drink. Or Uzbek food. If so, the response should be "yes" {food_or_drink: true}, else {food_or_drink: false}. Response must be only JSON`
       : `'${product?.title}' это что-то, что можно есть или пить? Пусть ответ будет только в формате JSON = {food_or_drink: true || false}`;
 
   const check_is_food_content =
