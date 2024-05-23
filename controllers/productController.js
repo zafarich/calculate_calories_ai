@@ -168,7 +168,7 @@ async function calculateCaloriesWithAI(product) {
 
     return JSON.parse(res2?.choices[0]?.message?.content);
   } else {
-    res_json;
+    return res_json;
   }
 }
 
