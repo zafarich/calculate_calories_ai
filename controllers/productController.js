@@ -161,13 +161,10 @@ async function createValidation(req, resizedPath) {
   }
 
   if (req.body.type === "image" && !req.file) {
-    has_error = true;
     deleteImage(resizedPath);
-
-    return {
-      success: false,
-      message: "If type is image, image is required",
-    };
+  }
+  if (req.body.type === "text" && req.file) {
+    deleteImage(resizedPath);
   }
 
   if (req.body.type === "text" && !req.body?.title) {
