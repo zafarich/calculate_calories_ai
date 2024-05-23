@@ -114,7 +114,7 @@ async function calculateCaloriesWithAI(product) {
 
   const check_food_text =
     product?.lang === "uz"
-      ? `'${product?.title}' yeyish yoki ichish uchunmi? Javob faqat JSON ko'rinishda bo'lsin = {for_eat_or_drink: true || false}`
+      ? `'${product?.title}' yeyish yoki ichish uchunmi? Javob faqat JSON ko'rinishda bo'lsin = {is: true || false}`
       : `'${product?.title}' это что-то, что можно есть или пить? Пусть ответ будет только в формате JSON = {for_eat_or_drink: true || false}`;
 
   const check_is_food_content =
@@ -154,7 +154,7 @@ async function calculateCaloriesWithAI(product) {
 
   const res_json = JSON.parse(res?.choices[0]?.message?.content);
 
-  if (res_json?.for_eat_or_drink) {
+  if (res_json?.is) {
     const res2 = await openai.chat.completions.create({
       model: "gpt-4o",
       response_format: {
