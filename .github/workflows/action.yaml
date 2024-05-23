@@ -16,7 +16,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: 123qwe!@#
+          ssh-private-key: ${{ secrets.SECRET_KEY }}
 
       - name: Run deployment script on server
         run: ssh user@your_server_ip 'bash -s' < deploy_script.sh
