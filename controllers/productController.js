@@ -115,10 +115,16 @@ async function calculateCaloriesWithAI(product) {
   const lang = product?.lang === "uz" ? "Uzbek" : "Russian";
 
   const comments = product?.comments;
-  const comments_array = [];
-  comments.forEach((item) => {
-    comments_array.push(item);
-  });
+  const comments_str = comments.join(". ");
+  const comment_user = comments?.length
+    ? `Comment in ${lang}: ${comments_str}`
+    : "";
+
+  console.log("comments_str", comments_str);
+  console.log("comment_user", comment_user);
+  // comments.forEach((item) => {
+  //   comments_array.push(item);
+  // });
 
   const product_obj =
     product?.type === "image"
@@ -169,7 +175,7 @@ async function calculateCaloriesWithAI(product) {
             {...product_obj},
             {
               type: "text",
-              text: `Calculate calories. The response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}`,
+              text: `Calculate calories. The response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}. ${comment_user}`,
             },
             ...comments_array,
           ],
