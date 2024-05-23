@@ -114,7 +114,7 @@ async function calculateCaloriesWithAI(product) {
 
   const check_food_text =
     product?.lang === "uz"
-      ? `${product?.title}ni ichish yoki yeyish mumkinmi? Javob faqat JSON ko'rinishda bo'lsin = {food_or_drink: true || false}. Bittasi "ha" bo'lsa ham true bo'lsin, aks holda false`
+      ? `${product?.title} is Uzbek word. Is it for eating or drinking? Response only must JSON = {food_or_drink: true || false}`
       : `'${product?.title}' это что-то, что можно есть или пить? Пусть ответ будет только в формате JSON = {food_or_drink: true || false}`;
 
   const check_is_food_content =
