@@ -31,7 +31,7 @@ exports.addComment = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: {product_id: newProduct?._id, result: ai_response},
+      data: {product_id: updatedProduct?._id, result: ai_response},
     });
   } catch (error) {
     res.status(500).json({message: error.message});
