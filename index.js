@@ -6,11 +6,13 @@ const path = require("path");
 const app = express();
 const fs = require("fs");
 require("dotenv").config();
+
+const tokenMiddleware = require("./middleware/staticMiddleware");
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(tokenMiddleware);
 // Database Connection
 mongoose.connect("mongodb://127.0.0.1:27017/calculate_calories", {});
 const db = mongoose.connection;
