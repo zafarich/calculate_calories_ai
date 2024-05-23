@@ -110,7 +110,7 @@ exports.createProduct = async (req, res) => {
 };
 
 async function calculateCaloriesWithAI(product) {
-  const lang = product?.lang === "uz" ? "Uzbek" : "Russian";
+  const lang = product?.lang === "uz" ? "o'zbek tilida" : "Russian";
 
   const product_item =
     product?.type === "image"
@@ -122,7 +122,7 @@ async function calculateCaloriesWithAI(product) {
         }
       : {
           type: "text",
-          text: `${product?.title} in ${lang}`,
+          text: `'${product?.title}' ${lang}`,
         };
 
   const res = await openai.chat.completions.create({
