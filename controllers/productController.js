@@ -112,18 +112,32 @@ exports.createProduct = async (req, res) => {
 async function calculateCaloriesWithAI(product) {
   const lang = product?.lang === "uz" ? "o'zbek tilida" : "Russian";
 
-  const product_item =
+  const check_food_text =
+    product?.lang === "uz"
+      ? `'${product?.title}' yeydigan narsa yoki ichimlikmi? Javob faqat JSON ko'rinishda bo'lsin = {for_eat_or_drink: true || false}`
+      : `'${product?.title}' это что-то, что можно есть или пить? Пусть ответ будет только в формате JSON = {for_eat_or_drink: true || false}`;
+
+  const check_is_food_content =
     product?.type === "image"
-      ? {
-          type: "image_url",
-          image_url: {
-            url: product?.image,
+      ? [
+          {
+            type: "image_url",
+            image_url: {
+              url: product?.image,
+            },
           },
-        }
-      : {
-          type: "text",
-          text: `'${product?.title}' ${lang}`,
-        };
+
+          {
+            type: "text",
+            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
+          },
+        ]
+      : [
+          {
+            type: "text",
+            text: check_food_text,
+          },
+        ];
 
   const res = await openai.chat.completions.create({
     model: "gpt-4o",
@@ -133,13 +147,7 @@ async function calculateCaloriesWithAI(product) {
     messages: [
       {
         role: "user",
-        content: [
-          // {...product_item},
-          {
-            type: "text",
-            text: `${product?.title} ovqat, yeydigan mahsulot yoki ichimlikmi? Javob faqat JSON ko'rinishda bo'lsin = {for_eat_or_drink: true || false}`,
-          },
-        ],
+        content: check_is_food_content,
       },
     ],
   });
