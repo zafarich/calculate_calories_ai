@@ -151,7 +151,6 @@ async function calculateCaloriesWithAI(product) {
 async function createValidation(req, resizedPath) {
   let has_error = false;
 
-  console.log("originalPath", originalPath);
   if (req.body.type === "image" || req.body.type === "text") {
     has_error = true;
     deleteImage(resizedPath);
