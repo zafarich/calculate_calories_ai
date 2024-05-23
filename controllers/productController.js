@@ -27,7 +27,12 @@ exports.addComment = async (req, res) => {
       }
     );
 
-    res.status(201).json({success: true});
+    const ai_response = await calculateCaloriesWithAI(updatedProduct);
+
+    res.status(201).json({
+      success: true,
+      data: {product_id: newProduct?._id, result: ai_response},
+    });
   } catch (error) {
     res.status(500).json({message: error.message});
   }
@@ -109,6 +114,12 @@ exports.createProduct = async (req, res) => {
 async function calculateCaloriesWithAI(product) {
   const lang = product?.lang === "uz" ? "Uzbek" : "Russian";
 
+  const comments = product?.comments;
+  const comments_array = [];
+  comments.forEach((item) => {
+    comments_array.push(item);
+  });
+
   const product_obj =
     product?.type === "image"
       ? {
@@ -160,6 +171,7 @@ async function calculateCaloriesWithAI(product) {
               type: "text",
               text: `Calculate calories. The response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}`,
             },
+            ...comments_array,
           ],
         },
       ],
