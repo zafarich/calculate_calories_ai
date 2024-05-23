@@ -52,7 +52,7 @@ exports.createProduct = async (req, res) => {
       return {width: 1024, height: 512};
     }
   }
-  const body = {..req.body}
+  const body = {...req.body};
 
   if (req.body.type === "image" || req.body.type === "text") {
     return res.status(201).json({
@@ -69,8 +69,6 @@ exports.createProduct = async (req, res) => {
       message: "If type is image, image is required",
     });
   }
-
-
 
   if (req.body.type === "text" && !req.title) {
     return res.status(201).json({
