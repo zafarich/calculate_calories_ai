@@ -151,7 +151,7 @@ async function calculateCaloriesWithAI(product) {
 async function createValidation(req, resizedPath) {
   let has_error = false;
 
-  if (req.body.type === "image" || req.body.type === "text") {
+  if (!(req.body.type === "image" || req.body.type === "text")) {
     has_error = true;
     deleteImage(resizedPath);
     return {
@@ -191,7 +191,7 @@ async function deleteImage(path) {
       if (err) {
         console.error("Error deleting file:", err);
       } else {
-        console.log("Original file deleted successfully");
+        console.log("File deleted successfully");
       }
     });
   }
