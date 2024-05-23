@@ -129,11 +129,16 @@ async function calculateCaloriesWithAI(product) {
     },
     messages: [
       {
-        ...product_obj,
-      },
-      {
-        type: "text",
-        text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
+        role: "user",
+        content: [
+          {
+            ...product_obj,
+          },
+          {
+            type: "text",
+            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
+          },
+        ],
       },
     ],
   });
