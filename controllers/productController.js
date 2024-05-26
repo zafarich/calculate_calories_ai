@@ -23,12 +23,12 @@ exports.addComment = async (req, res) => {
       });
     }
 
-    if (comment && comment?.length > 50) {
+    if (comment && comment?.length > 100) {
       return res.status(201).json({
         success: false,
         data: null,
         error_code: 2,
-        message: "Izoh 50 ta belgidan ko'p bo'lmasligi kerak",
+        message: "Izoh 100 ta belgidan ko'p bo'lmasligi kerak",
       });
     }
 
@@ -42,7 +42,7 @@ exports.addComment = async (req, res) => {
         success: false,
         data: null,
         error_code: 3,
-        message: "Bitta mahsulot uchun maksimal izoh 6 ta",
+        message: "Bitta mahsulot uchun maksimal izoh 7 ta",
       });
     }
 
