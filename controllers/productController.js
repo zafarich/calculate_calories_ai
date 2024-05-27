@@ -128,7 +128,7 @@ exports.createProduct = async (req, res) => {
 
     const ai_response = await calculateCaloriesWithAI(newProduct);
 
-    if (!ai_response?.is_product) {
+    if (ai_response?.for_eat_or_drink === false) {
       await deleteProductMethod(newProduct?._id);
       return res.status(201).json({
         success: true,
@@ -191,7 +191,31 @@ async function calculateCaloriesWithAI(product) {
           text: `${product.title} is ${lang} word`,
         };
 
-  const res_check = await openai.chat.completions.create({
+  // const res_check = await openai.chat.completions.create({
+  //   model: "gpt-4o",
+  //   response_format: {
+  //     type: "json_object",
+  //   },
+  //   messages: [
+  //     {
+  //       role: "user",
+  //       content: [
+  //         {
+  //           ...product_obj,
+  //         },
+  //         {
+  //           type: "text",
+  //           text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // });
+
+  // const res_json = JSON.parse(res_check?.choices[0]?.message?.content);
+
+  // if (res_json?.for_eat_or_drink) {
+  const res2 = await openai.chat.completions.create({
     model: "gpt-4o",
     response_format: {
       type: "json_object",
@@ -200,49 +224,24 @@ async function calculateCaloriesWithAI(product) {
       {
         role: "user",
         content: [
-          {
-            ...product_obj,
-          },
+          {...product_obj},
           {
             type: "text",
-            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
+            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}. ${comment_user}`,
           },
         ],
       },
     ],
   });
 
-  const res_json = JSON.parse(res_check?.choices[0]?.message?.content);
-
-  if (res_json?.for_eat_or_drink) {
-    const res2 = await openai.chat.completions.create({
-      model: "gpt-4o",
-      response_format: {
-        type: "json_object",
-      },
-      messages: [
-        {
-          role: "user",
-          content: [
-            {...product_obj},
-            {
-              type: "text",
-              text: `Calculate calories. The response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}. ${comment_user}`,
-            },
-          ],
-        },
-      ],
-    });
-
-    return {
-      is_product: true,
-      ...JSON.parse(res2?.choices[0]?.message?.content),
-    };
-  } else {
-    return {
-      is_product: false,
-    };
-  }
+  return {
+    ...JSON.parse(res2?.choices[0]?.message?.content),
+  };
+  //  else {
+  //   return {
+  //     is_product: false,
+  //   };
+  // }
 }
 
 async function createValidation(req, resizedPath) {
