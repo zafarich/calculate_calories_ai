@@ -101,8 +101,6 @@ exports.createProduct = async (req, res) => {
     fs.unlink(originalPath, (err) => {
       if (err) {
         console.error("Error deleting file:", err);
-      } else {
-        console.log("Original file deleted successfully");
       }
     });
     imagePath = `/uploads/product/resized-${req.file.filename}`;
@@ -179,12 +177,6 @@ async function calculateCaloriesWithAI(product) {
   const comment_user = comments?.length
     ? `Comment in ${lang}: ${comments_str}`
     : "";
-
-  console.log("comments_str", comments_str);
-  console.log("comment_user", comment_user);
-  // comments.forEach((item) => {
-  //   comments_array.push(item);
-  // });
 
   const product_obj =
     product?.type === "image"
@@ -292,8 +284,6 @@ async function deleteImage(path) {
     fs.unlink(path, (err) => {
       if (err) {
         console.error("Error deleting file:", err);
-      } else {
-        console.log("File deleted successfully");
       }
     });
   }
