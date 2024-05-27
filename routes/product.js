@@ -19,5 +19,6 @@ const upload = multer({storage: storage});
 
 router.post("/", upload.single("image"), productController.createProduct);
 router.post("/add/comment", productController.addComment);
+router.delete("/:id", productController.deleteProduct);
 
 module.exports = router;
