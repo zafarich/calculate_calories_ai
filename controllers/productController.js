@@ -130,6 +130,14 @@ exports.createProduct = async (req, res) => {
 
     const ai_response = await calculateCaloriesWithAI(newProduct);
 
+    if (!ai_response?.is_product) {
+      await deleteProductMethod(newProduct?._id);
+      return res.status(201).json({
+        success: true,
+        data: {product_id: null, result: ai_response},
+      });
+    }
+
     res.status(201).json({
       success: true,
       data: {product_id: newProduct?._id, result: ai_response},
@@ -234,7 +242,10 @@ async function calculateCaloriesWithAI(product) {
       ],
     });
 
-    return JSON.parse(res2?.choices[0]?.message?.content);
+    return {
+      is_product: true,
+      ...JSON.parse(res2?.choices[0]?.message?.content),
+    };
   } else {
     return {
       is_product: false,
