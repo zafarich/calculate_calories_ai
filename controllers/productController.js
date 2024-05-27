@@ -141,17 +141,27 @@ exports.createProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
-    if (!product) {
-      return res
-        .status(404)
-        .json({success: false, message: "Product not found"});
-    }
-    res.status(200).json({success: true, message: "Product deleted"});
-  } catch (error) {
-    res.status(500).json({success: false, message: error.message});
+    const response = await deleteProductMethod(req.params.id);
+    res.status(200).json({...response});
+  } catch {
+    res.status(500).json({success: false, message: "error"});
   }
 };
+
+async function deleteProductMethod(id) {
+  try {
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      return {
+        success: false,
+        message: "Product not found",
+      };
+    }
+    return {success: true, message: "Product deleted"};
+  } catch (error) {
+    return {success: false, message: error.message};
+  }
+}
 
 async function calculateCaloriesWithAI(product) {
   const lang = product?.lang === "uz" ? "Uzbek" : "Russian";
