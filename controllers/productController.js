@@ -132,13 +132,21 @@ exports.createProduct = async (req, res) => {
       await deleteProductMethod(newProduct?._id);
       return res.status(201).json({
         success: true,
-        data: {product_id: null, result: ai_response},
+        data: {
+          product_id: null,
+          result: {
+            is_food: false,
+          },
+        },
       });
     }
 
     res.status(201).json({
       success: true,
-      data: {product_id: newProduct?._id, result: ai_response},
+      data: {
+        product_id: newProduct?._id,
+        result: {...ai_response, is_food: true},
+      },
     });
   } catch (error) {
     res.status(400).json({message: error.message});
@@ -191,30 +199,6 @@ async function calculateCaloriesWithAI(product) {
           text: `${product.title} is ${lang} word`,
         };
 
-  // const res_check = await openai.chat.completions.create({
-  //   model: "gpt-4o",
-  //   response_format: {
-  //     type: "json_object",
-  //   },
-  //   messages: [
-  //     {
-  //       role: "user",
-  //       content: [
-  //         {
-  //           ...product_obj,
-  //         },
-  //         {
-  //           type: "text",
-  //           text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}`,
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // });
-
-  // const res_json = JSON.parse(res_check?.choices[0]?.message?.content);
-
-  // if (res_json?.for_eat_or_drink) {
   const res2 = await openai.chat.completions.create({
     model: "gpt-4o",
     response_format: {
@@ -237,11 +221,6 @@ async function calculateCaloriesWithAI(product) {
   return {
     ...JSON.parse(res2?.choices[0]?.message?.content),
   };
-  //  else {
-  //   return {
-  //     is_product: false,
-  //   };
-  // }
 }
 
 async function createValidation(req, resizedPath) {
