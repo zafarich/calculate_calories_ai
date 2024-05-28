@@ -196,7 +196,7 @@ async function calculateCaloriesWithAI(product) {
         }
       : {
           type: "text",
-          text: `${product.title} is ${lang} word`,
+          text: `${lang}: ${product.title}`,
         };
 
   const res2 = await openai.chat.completions.create({
