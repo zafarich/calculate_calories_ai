@@ -200,7 +200,7 @@ async function calculateCaloriesWithAI(product) {
         };
 
   const res2 = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-4-turbo",
     response_format: {
       type: "json_object",
     },
