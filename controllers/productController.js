@@ -206,12 +206,17 @@ async function calculateCaloriesWithAI(product) {
       product?.lang === "ru" ? "Russian" : "Uzbek"
     } text to English: "${product.title}"`;
     try {
+      console.log("translationPrompt", translationPrompt);
+
+      return;
       const translationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         prompt: translationPrompt,
         max_tokens: 60,
         temperature: 0.3,
       });
+
+      console.log("translationResponse", translationResponse);
 
       translatedFoodItem = translationResponse.data.choices[0].text.trim();
     } catch (error) {
