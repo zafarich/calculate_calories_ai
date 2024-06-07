@@ -199,9 +199,9 @@ async function calculateCaloriesWithAI(product) {
           text: `Product (in ${lang}): ${product.title}`,
         };
 
-  let product_title = product.title;
+  let translatedFoodItem = product.title;
 
-  if (lang === "ru" || lang === "uz") {
+  if (product?.lang === "ru" || product?.lang === "uz") {
     const translationPrompt = `Translate the following ${
       product?.lang === "ru" ? "Russian" : "Uzbek"
     } text to English: "${product.title}"`;
