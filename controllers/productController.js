@@ -301,7 +301,7 @@ async function calculateCaloriesWithAI(product) {
   // };
   console.log(
     "response.choices[0].message?.content",
-    response.choices[0].message?.content
+    response.choices[0].message
   );
   return response.choices[0].message?.content;
 }
