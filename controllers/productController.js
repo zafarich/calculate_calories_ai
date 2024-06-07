@@ -206,9 +206,6 @@ async function calculateCaloriesWithAI(product) {
       product?.lang === "ru" ? "Russian" : "Uzbek"
     } text to English: "${product.title}"`;
     try {
-      console.log("translationPrompt", translationPrompt);
-
-      return;
       const translationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         prompt: translationPrompt,
