@@ -196,7 +196,7 @@ async function calculateCaloriesWithAI(product) {
         }
       : {
           type: "text",
-          text: `${lang}: ${product.title}`,
+          text: `Product (in ${lang}): ${product.title}`,
         };
 
   const res2 = await openai.chat.completions.create({
@@ -206,18 +206,19 @@ async function calculateCaloriesWithAI(product) {
     },
     messages: [
       {
+        role: "user",
+        content: [{...product_obj}],
+      }
+      {
         role: "system",
         content: [
           {
             type: "text",
-            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. JSON {title: xx, total_calories: xx, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}. ${comment_user}`,
+            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. JSON {title: x, total_calories: x, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}. ${comment_user}`,
           },
         ],
       },
-      {
-        role: "user",
-        content: [{...product_obj}],
-      },
+      ,
     ],
   });
 
