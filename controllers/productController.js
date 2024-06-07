@@ -217,9 +217,12 @@ async function calculateCaloriesWithAI(product) {
         ],
       });
 
-      console.log("translationResponse", translationResponse);
+      console.log(
+        "translationResponse",
+        translationResponse.choices[0].message
+      );
 
-      translatedFoodItem = translationResponse.data.choices[0].text.trim();
+      translatedFoodItem = translationResponse.choices[0].message.trim();
     } catch (error) {
       console.error("Error translating food item:", error);
       return;
