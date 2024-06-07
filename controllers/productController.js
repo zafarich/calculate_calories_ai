@@ -208,9 +208,13 @@ async function calculateCaloriesWithAI(product) {
     try {
       const translationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
-        prompt: translationPrompt,
-        max_tokens: 60,
-        temperature: 0.3,
+
+        messages: [
+          {
+            role: "user",
+            content: translationPrompt,
+          },
+        ],
       });
 
       console.log("translationResponse", translationResponse);
