@@ -222,7 +222,8 @@ async function calculateCaloriesWithAI(product) {
         translationResponse.choices[0].message
       );
 
-      translatedFoodItem = translationResponse.choices[0].message.trim();
+      translatedFoodItem =
+        translationResponse.choices[0].message?.content.trim();
     } catch (error) {
       console.error("Error translating food item:", error);
       return;
