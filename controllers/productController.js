@@ -267,6 +267,9 @@ async function calculateCaloriesWithAI(product) {
 
     response = await openai.chat.completions.create({
       model: "gpt-4o",
+      response_format: {
+        type: "json_object",
+      },
       messages: [
         {
           role: "user",
@@ -307,7 +310,11 @@ async function calculateCaloriesWithAI(product) {
     "response.choices[0].message?.content",
     response.choices[0].message?.content
   );
-  return response.choices[0].message?.content;
+  // return response.choices[0].message?.content;
+
+  return {
+    ...JSON.parse(response.choices[0].message?.content),
+  };
 }
 
 async function createValidation(req, resizedPath) {
