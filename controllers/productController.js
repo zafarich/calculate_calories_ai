@@ -234,7 +234,7 @@ async function calculateCaloriesWithAI(product) {
     const imageBase64 = imageBuffer.toString("base64");
 
     response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -253,8 +253,11 @@ async function calculateCaloriesWithAI(product) {
       temperature: 0.5,
     });
   } else {
+    console.log("prompt", prompt);
+
+    return;
     response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o",
       prompt: prompt,
       max_tokens: 300,
       temperature: 0.5,
