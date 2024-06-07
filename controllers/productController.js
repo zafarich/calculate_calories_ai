@@ -231,7 +231,7 @@ async function calculateCaloriesWithAI(product) {
   }
 
   const prompt = `
-  You are a nutrition expert. Please provide detailed information about the given food item in JSON format. The JSON should include whether the item is edible, its total calories, breakdown of calories from protein, carbohydrates, and fat. If the item can be cooked in different ways, provide a list of cooking methods with their separate calorie values and additives. Here is the food item:
+  You are a nutrition expert. Please provide detailed information about the given food item in only JSON format. The JSON should include whether the item is edible, its total calories, breakdown of calories from protein, carbohydrates, and fat. If the item can be cooked in different ways, provide a list of cooking methods with their separate calorie values and additives. Here is the food item:
 
   Food Item: ${translatedFoodItem}
   `;
