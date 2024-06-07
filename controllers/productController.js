@@ -265,7 +265,6 @@ async function calculateCaloriesWithAI(product) {
   } else {
     console.log("prompt", prompt);
 
-    return;
     response = await openai.chat.completions.create({
       model: "gpt-4o",
       prompt: prompt,
@@ -301,7 +300,7 @@ async function calculateCaloriesWithAI(product) {
   // };
   console.log(
     "response.choices[0].message?.content",
-    response.choices[0].message
+    response.choices[0].message?.content
   );
   return response.choices[0].message?.content;
 }
