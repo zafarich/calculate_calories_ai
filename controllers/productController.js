@@ -299,7 +299,10 @@ async function calculateCaloriesWithAI(product) {
   // return {
   //   ...JSON.parse(res2?.choices[0]?.message?.content),
   // };
-
+  console.log(
+    "response.choices[0].message?.content",
+    response.choices[0].message?.content
+  );
   return response.choices[0].message?.content;
 }
 
