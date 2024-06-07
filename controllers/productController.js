@@ -300,7 +300,7 @@ async function calculateCaloriesWithAI(product) {
   //   ...JSON.parse(res2?.choices[0]?.message?.content),
   // };
 
-  return response.data.choices[0].text.trim();
+  return response..choices[0].message?.content;
 }
 
 async function createValidation(req, resizedPath) {
