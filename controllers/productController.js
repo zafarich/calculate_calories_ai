@@ -208,7 +208,7 @@ async function calculateCaloriesWithAI(product) {
       {
         role: "user",
         content: [{...product_obj}],
-      }
+      },
       {
         role: "system",
         content: [
