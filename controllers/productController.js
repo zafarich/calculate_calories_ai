@@ -206,7 +206,7 @@ async function calculateCaloriesWithAI(product) {
       product?.lang === "ru" ? "Russian" : "Uzbek"
     } text to English: "${product.title}"`;
     try {
-      const translationResponse = await openai.createCompletion({
+      const translationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         prompt: translationPrompt,
         max_tokens: 60,
@@ -233,7 +233,7 @@ async function calculateCaloriesWithAI(product) {
     const imageBuffer = await fs.readFile(imagePath);
     const imageBase64 = imageBuffer.toString("base64");
 
-    response = await openai.createCompletion({
+    response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         {
@@ -253,7 +253,7 @@ async function calculateCaloriesWithAI(product) {
       temperature: 0.5,
     });
   } else {
-    response = await openai.createCompletion({
+    response = await openai.chat.completions.create({
       model: "gpt-4",
       prompt: prompt,
       max_tokens: 300,
