@@ -210,7 +210,7 @@ async function calculateCaloriesWithAI(product) {
         content: [
           {
             type: "text",
-            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. JSON {title: x, total_calories: x, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}. All titles need to be in ${lang}. ${comment_user}`,
+            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. Let the calorie count be for the cooked product. JSON {title: x, total_calories: x, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}.  All titles need to be in ${lang}. ${comment_user}`,
           },
         ],
       },
