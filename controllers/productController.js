@@ -128,24 +128,24 @@ exports.createProduct = async (req, res) => {
 
     const ai_response = await calculateCaloriesWithAI(newProduct);
 
-    if (ai_response?.for_eat_or_drink === false) {
-      await deleteProductMethod(newProduct?._id);
-      return res.status(201).json({
-        success: true,
-        data: {
-          product_id: null,
-          result: {
-            is_food: false,
-          },
-        },
-      });
-    }
+    // if (ai_response?.for_eat_or_drink === false) {
+    //   await deleteProductMethod(newProduct?._id);
+    //   return res.status(201).json({
+    //     success: true,
+    //     data: {
+    //       product_id: null,
+    //       result: {
+    //         is_food: false,
+    //       },
+    //     },
+    //   });
+    // }
 
     res.status(201).json({
       success: true,
       data: {
         product_id: newProduct?._id,
-        result: {...ai_response, is_food: true},
+        result: ai_response,
       },
     });
   } catch (error) {
@@ -199,31 +199,95 @@ async function calculateCaloriesWithAI(product) {
           text: `Product (in ${lang}): ${product.title}`,
         };
 
-  const res2 = await openai.chat.completions.create({
-    model: "gpt-4o",
-    response_format: {
-      type: "json_object",
-    },
-    messages: [
-      {
-        role: "system",
-        content: [
-          {
-            type: "text",
-            text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. Let the calorie count be for the cooked product. JSON {title: x, total_calories: x, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}.  All titles need to be in ${lang}. ${comment_user}`,
-          },
-        ],
-      },
-      {
-        role: "user",
-        content: [{...product_obj}],
-      },
-    ],
-  });
+  let product_title = product.title;
 
-  return {
-    ...JSON.parse(res2?.choices[0]?.message?.content),
-  };
+  if (lang === "ru" || lang === "uz") {
+    const translationPrompt = `Translate the following ${
+      product?.lang === "ru" ? "Russian" : "Uzbek"
+    } text to English: "${product.title}"`;
+    try {
+      const translationResponse = await openai.createCompletion({
+        model: "gpt-4o",
+        prompt: translationPrompt,
+        max_tokens: 60,
+        temperature: 0.3,
+      });
+
+      translatedFoodItem = translationResponse.data.choices[0].text.trim();
+    } catch (error) {
+      console.error("Error translating food item:", error);
+      return;
+    }
+  }
+
+  const prompt = `
+  You are a nutrition expert. Please provide detailed information about the given food item in JSON format. The JSON should include whether the item is edible, its total calories, breakdown of calories from protein, carbohydrates, and fat. If the item can be cooked in different ways, provide a list of cooking methods with their separate calorie values and additives. Here is the food item:
+
+  Food Item: ${translatedFoodItem}
+  `;
+
+  let response;
+
+  if (product?.image) {
+    // Read the image file
+    const imageBuffer = await fs.readFile(imagePath);
+    const imageBase64 = imageBuffer.toString("base64");
+
+    response = await openai.createCompletion({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: "You are a nutrition expert.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+        {
+          role: "user",
+          content: [{...product_obj}],
+        },
+      ],
+      max_tokens: 300,
+      temperature: 0.5,
+    });
+  } else {
+    response = await openai.createCompletion({
+      model: "gpt-4",
+      prompt: prompt,
+      max_tokens: 300,
+      temperature: 0.5,
+    });
+  }
+
+  // const res2 = await openai.chat.completions.create({
+  //   model: "gpt-4o",
+  //   response_format: {
+  //     type: "json_object",
+  //   },
+  //   messages: [
+  //     {
+  //       role: "system",
+  //       content: [
+  //         {
+  //           type: "text",
+  //           text: `Is it food or drink? Response must format JSON only = {for_eat_or_drink: true || false}. If it is food or drink calculate calories and the response must be JSON only. Let the calorie count be for the cooked product. JSON {title: x, total_calories: x, macros: {proteins: x gr, carbs: x gr, fats: x gr}, ingridients: [title: xx, grams: xx, calories: xx]}.  All titles need to be in ${lang}. ${comment_user}`,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       role: "user",
+  //       content: [{...product_obj}],
+  //     },
+  //   ],
+  // });
+
+  // return {
+  //   ...JSON.parse(res2?.choices[0]?.message?.content),
+  // };
+
+  return response.data.choices[0].text.trim();
 }
 
 async function createValidation(req, resizedPath) {
