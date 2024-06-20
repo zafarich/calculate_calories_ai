@@ -57,9 +57,25 @@ exports.addComment = async (req, res) => {
 
     const ai_response = await calculateCaloriesWithAI(updatedProduct);
 
+    if (ai_response?.for_eat_or_drink === false) {
+      await deleteProductMethod(newProduct?._id);
+      return res.status(201).json({
+        success: true,
+        data: {
+          product_id: null,
+          result: {
+            is_food: false,
+          },
+        },
+      });
+    }
+
     res.status(201).json({
       success: true,
-      data: {product_id: updatedProduct?._id, result: ai_response},
+      data: {
+        product_id: updatedProduct?._id,
+        result: {...ai_response, is_food: true},
+      },
     });
   } catch (error) {
     res.status(500).json({message: error.message});
